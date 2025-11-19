@@ -16,8 +16,31 @@ Backend REST API menggunakan **Laravel 12** untuk mengelola data guru, sekolah, 
 - ✅ Dashboard Admin (statistik guru & sekolah)  
 - ✅ Dashboard Operator (data sekolah masing-masing)  
 - ✅ Hitung guru mendekati masa pensiun  
-- ✅ API siap konsumsi oleh frontend React / web apa pun  
+
+---
+## 🛠️ Teknologi
+
+- Laravel 12  
+- MySQL  
+- Sanctum  
+- Eloquent ORM  
+- Carbon
 
 ---
 
-## 📁 Struktur Utama API
+## 🔧 Instalasi
+
+```bash
+git clone https://github.com/MiniHapz/api-manajemen-guru.git
+cd api-manajemen-guru
+
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan db:seed
+```
+
+Langsung siap jalankan
+```bash
+php artisan serve
