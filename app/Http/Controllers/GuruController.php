@@ -113,7 +113,10 @@ if (isset($validated['jabatan']) && strtolower($validated['jabatan']) === 'kepal
         $user = $request->user();
         
         $guru = Guru::with(['sekolah', 'mapel'])
-    ->when($user->role !== 'admin_cabdin', fn($q) => $q->where('sekolah_id', $user->sekolah_id))
+    ->when(!in_array($user->role, ['admin', 'admin_cabdin']), function ($q) use ($user) {
+    $q->where('sekolah_id', $user->sekolah_id);
+})
+
     ->where('nip', $nip)
     ->first();
 
