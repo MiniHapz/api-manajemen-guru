@@ -10,16 +10,18 @@ class SekolahController extends Controller
 {
     // Ambil semua data sekolah
     public function index()
-    {
-        $sekolah = Sekolah::with('kepalaSekolah')
-                    ->doesntHave('operator') // hanya sekolah tanpa operator
-                    ->get();
+{
+    $sekolah = Sekolah::with('kepalaSekolah')
+        ->where('status', 'aktif')       // 🔥 filter aktif
+        ->doesntHave('operator')         // tanpa operator
+        ->get();
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $sekolah
-        ]);
-    }
+    return response()->json([
+        'status' => 'success',
+        'data' => $sekolah
+    ]);
+}
+
 
     // Tambah sekolah baru (tanpa kepala sekolah)
     public function store(Request $request)
@@ -40,6 +42,7 @@ class SekolahController extends Controller
             'npsn' => $request->npsn,
             'alamat' => $request->alamatSekolah,
             'kepala_sekolah_nip' => null, // default kosong
+            'status' => 'aktif',
         ]);
         // ================================
 // 🧩 Auto Insert Mapel Default
@@ -99,15 +102,22 @@ public function show($id)
     ]);
 }
 
-    // Update dinonaktifkan (karena sekolah tidak bisa diubah)
-    public function update(Request $request, $id)
-    {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Data sekolah tidak dapat diubah setelah dibuat.'
-        ], 403);
-    }
+public function updateStatus(Request $request, $id)
+{
+    $request->validate([
+        'status' => 'required|in:aktif,nonaktif'
+    ]);
 
+    $sekolah = Sekolah::findOrFail($id);
+    $sekolah->status = $request->status;
+    $sekolah->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Status sekolah berhasil diperbarui',
+        'data' => $sekolah
+    ]);
+}
     // Hapus sekolah
     public function destroy($id)
     {

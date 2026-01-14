@@ -2,21 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\CabdinController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\MapelController;
 use App\Http\Controllers\DashboardOperatorController;
-use App\Http\Controllers\GolonganPangkatController;
-use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\GuruController;
-use App\Http\Controllers\RiwayatKepegawaianController;
-use App\Http\Controllers\JamMengajarController;
-use App\Http\Controllers\DokumenController;
-use App\Http\Controllers\KategoriDokumenController;
-use App\Http\Controllers\UsulPerubahanController;
-use App\Http\Controllers\LogAuditController;
 use App\Http\Controllers\DashboardAdminController;
-use App\Http\Controllers\MapelJurusanController;
 use Illuminate\Http\Request;
 
 
@@ -44,21 +34,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return response()->json($request->user()->load('sekolah'));
 });
 
+Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
+    Route::put('sekolah/{id}/status', [SekolahController::class, 'updateStatus']);
+});
 
 Route::apiResource('sekolah', SekolahController::class);
+
 // Proteksi dengan Sanctum
 Route::middleware(['auth:sanctum'])->group(function () {
     
     
     Route::get('/dashboard/operator', [DashboardOperatorController::class, 'index']);
     Route::put('/change-password', [UserController::class, 'changePassword']);
-
-    Route::apiResource('dokumen', DokumenController::class);
-    Route::get('dokumen/download/{id}', [DokumenController::class, 'download']);
-    Route::get('dokumen/preview/{id}', [DokumenController::class, 'preview']);
-
-    // Kategori Dokumen
-    Route::apiResource('kategori-dokumen', KategoriDokumenController::class);
 
     // User Management
     Route::get('/users', [UserController::class, 'index']);
@@ -87,12 +74,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('guru/{nip}', [GuruController::class, 'update']);
         Route::delete('guru/{nip}', [GuruController::class, 'destroy']);
     
-    Route::apiResource('dokumen', DokumenController::class);
-
 
     Route::get('/dashboard-admin', [DashboardAdminController::class, 'index']);
 
-    // ===== Usulan Perubahan =====
 });
 
 

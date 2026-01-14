@@ -5,71 +5,133 @@ namespace App\Http\Controllers;
 use App\Models\Sekolah;
 use App\Models\Guru;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class DashboardAdminController extends Controller
 {
     public function index()
     {
-        // 🔹 Statistik Utama
+        /*
+        |--------------------------------------------------------------------------
+        | 🔹 STATISTIK UTAMA (HANYA SEKOLAH AKTIF)
+        |--------------------------------------------------------------------------
+        */
         $totalSekolah = Sekolah::count();
         $totalGuru = Guru::count();
 
-        // Guru yang akan pensiun (misal: umur >= 57 tahun)
-        $guruAkanPensiun = Guru::whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) >= 57')->count();
+        // Guru yang akan pensiun (>= 57 tahun)
+        $guruAkanPensiun = Guru::whereRaw(
+            'TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) >= 57'
+        )->count();
 
-        // 🔹 Statistik Jenis Guru
+        /*
+        |--------------------------------------------------------------------------
+        | 🔹 STATISTIK JENIS GURU
+        |--------------------------------------------------------------------------
+        */
         $jumlahPNS = Guru::where('status_kepegawaian', 'PNS')->count();
         $jumlahP3K = Guru::where('status_kepegawaian', 'P3K')->count();
-        $jumlahParuhWaktu = Guru::where('status_kepegawaian', 'P3K Paruh Waktu')->count();
+        $jumlahParuhWaktu = Guru::where('status_kepegawaian', 'p3k_paruh_waktu')->count();
 
-        // 🔹 Statistik Jenjang Sekolah
-        $jumlahSMK = Sekolah::where('jenjang', 'SMK')->count();
-        $jumlahSMA = Sekolah::where('jenjang', 'SMA')->count();
-        $jumlahSLB = Sekolah::where('jenjang', 'SLB')->count();
+        /*
+        |--------------------------------------------------------------------------
+        | 🔹 STATISTIK JENJANG SEKOLAH (AKTIF SAJA)
+        |--------------------------------------------------------------------------
+        */
+        $jumlahSMK = Sekolah::where('status', 'aktif')
+            ->where('jenjang', 'SMK')
+            ->count();
 
-        // 🔹 Detail daftar sekolah (batas 10 biar ringan)
+        $jumlahSMA = Sekolah::where('status', 'aktif')
+            ->where('jenjang', 'SMA')
+            ->count();
+
+        $jumlahSLB = Sekolah::where('status', 'aktif')
+            ->where('jenjang', 'SLB')
+            ->count();
+
+        /*
+        |--------------------------------------------------------------------------
+        | 🔹 DAFTAR SEKOLAH (AKTIF, BATAS 10)
+        |--------------------------------------------------------------------------
+        */
         $daftarSekolah = Sekolah::withCount('guru')
-            ->take(10)
             ->get()
             ->map(function ($s) {
-                $pns = $s->guru()->where('status_kepegawaian', 'PNS')->count();
-                $p3k = $s->guru()->where('status_kepegawaian', 'P3K')->count();
-                $paruh = $s->guru()->where('status_kepegawaian', 'P3K Paruh Waktu')->count();
+                $pns = $s->guru()
+                    ->where('status_kepegawaian', 'PNS')
+                    ->count();
+
+                $p3k = $s->guru()
+                    ->where('status_kepegawaian', 'P3K')
+                    ->count();
+
+                $paruh = $s->guru()
+                    ->where('status_kepegawaian', 'p3k_paruh_waktu')
+                    ->count();
+
                 $pensiun = $s->guru()
                     ->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) >= 57')
                     ->count();
 
                 return [
-                    'id' => $s->id,
-                    'nama' => $s->nama_sekolah,
-                    'alamat' => $s->alamat,
-                    'jenjang' => $s->jenjang,
-                    'jumlahGuru' => $s->guru_count,
-                    'pns' => $pns,
-                    'p3k' => $p3k,
-                    'paruhWaktu' => $paruh,
-                    'masaPensiun' => $pensiun,
+                    'id'           => $s->id,
+                    'nama'         => $s->nama_sekolah,
+                    'alamat'       => $s->alamat,
+                    'jenjang'      => $s->jenjang,
+                     'status' => $s->status,
+                    'jumlahGuru'   => $s->guru_count,
+                    'pns'          => $pns,
+                    'p3k'          => $p3k,
+                    'p3k_paruh_waktu'   => $paruh,
+                    'masaPensiun'  => $pensiun,
                 ];
             });
 
-        // 🔹 Hitung persentase untuk pie chart guru
-        $totalGuruSemua = max(1, $jumlahPNS + $jumlahP3K + $jumlahParuhWaktu); // avoid /0
+        /*
+        |--------------------------------------------------------------------------
+        | 🔹 PIE CHART GURU
+        |--------------------------------------------------------------------------
+        */
+        $totalGuruSemua = max(1, $jumlahPNS + $jumlahP3K + $jumlahParuhWaktu);
+
         $guruPie = [
-            ['label' => 'PNS', 'value' => round(($jumlahPNS / $totalGuruSemua) * 100, 1), 'color' => '#10b981'],
-            ['label' => 'P3K', 'value' => round(($jumlahP3K / $totalGuruSemua) * 100, 1), 'color' => '#f59e0b'],
-            ['label' => 'P3K Paruh Waktu', 'value' => round(($jumlahParuhWaktu / $totalGuruSemua) * 100, 1), 'color' => '#ef4444'],
-        ];
+    ['label' => 'PNS', 'value' => round(($jumlahPNS / $totalGuruSemua) * 100, 1), 'color' => '#3b82f6'],
+    ['label' => 'P3K', 'value' => round(($jumlahP3K / $totalGuruSemua) * 100, 1), 'color' => '#10b981'],
+    ['label' => 'p3k_paruh_waktu', 'value' => round(($jumlahParuhWaktu / $totalGuruSemua) * 100, 1), 'color' => '#f59e0b'],
+];
 
-        // 🔹 Hitung persentase untuk pie chart sekolah
+
+        /*
+        |--------------------------------------------------------------------------
+        | 🔹 PIE CHART SEKOLAH
+        |--------------------------------------------------------------------------
+        */
         $totalSekolahSemua = max(1, $jumlahSMK + $jumlahSMA + $jumlahSLB);
-        $sekolahPie = [
-            ['label' => 'SMK', 'value' => round(($jumlahSMK / $totalSekolahSemua) * 100, 1), 'color' => '#06b6d4'],
-            ['label' => 'SMA', 'value' => round(($jumlahSMA / $totalSekolahSemua) * 100, 1), 'color' => '#3b82f6'],
-            ['label' => 'SLB', 'value' => round(($jumlahSLB / $totalSekolahSemua) * 100, 1), 'color' => '#8b5cf6'],
-        ];
 
-        // 🔹 Format respons JSON
+$sekolahPie = [
+    [
+        'label' => 'SMK',
+        'value' => round(($jumlahSMK / $totalSekolahSemua) * 100, 1),
+        'color' => '#3b82f6', // biru
+    ],
+    [
+        'label' => 'SMA',
+        'value' => round(($jumlahSMA / $totalSekolahSemua) * 100, 1),
+        'color' => '#10b981', // hijau
+    ],
+    [
+        'label' => 'SLB',
+        'value' => round(($jumlahSLB / $totalSekolahSemua) * 100, 1),
+        'color' => '#f59e0b', // kuning/oranye
+    ],
+];
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 🔹 RESPONSE
+        |--------------------------------------------------------------------------
+        */
         return response()->json([
             'stats' => [
                 'total_sekolah' => $totalSekolah,

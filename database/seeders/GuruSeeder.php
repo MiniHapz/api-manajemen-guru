@@ -32,7 +32,7 @@ class GuruSeeder extends Seeder
                 'email' => 'dedi.priyanto@example.com',
                 'alamat' => 'Jl. Kenanga No.10, Surabaya',
                 'tanggal_bergabung' => '2008-07-15',
-                'tanggal_pensiun' => '2044-01-01',
+                'tanggal_pensiun' => '2044-02-01',
                 'jam_mengajar_per_minggu' => '11',
             ],
             [
@@ -47,7 +47,7 @@ class GuruSeeder extends Seeder
                 'email' => 'ayu.rahmadani@example.com',
                 'alamat' => 'Jl. Kamboja No.22, Bandung',
                 'tanggal_bergabung' => '2014-02-10',
-                'tanggal_pensiun' => '2051-03-05',
+                'tanggal_pensiun' => '2051-04-05',
                 'jam_mengajar_per_minggu' => '21',
             ],
             [
@@ -62,7 +62,7 @@ class GuruSeeder extends Seeder
                 'email' => 'fajar.saputra@example.com',
                 'alamat' => 'Jl. Mawar No.9, Semarang',
                 'tanggal_bergabung' => '2018-09-21',
-                'tanggal_pensiun' => '2056-12-20',
+                'tanggal_pensiun' => '2057-1-20',
                 'jam_mengajar_per_minggu' => '24',
             ],
         ];
@@ -83,7 +83,7 @@ class GuruSeeder extends Seeder
                 'email' => 'rina.marlina@example.com',
                 'alamat' => 'Jl. Flamboyan No.5, Jakarta',
                 'tanggal_bergabung' => '2009-08-11',
-                'tanggal_pensiun' => '2045-02-20',
+                'tanggal_pensiun' => '2045-03-20',
                 'jam_mengajar_per_minggu' => '18',
             ],
             [
@@ -98,7 +98,7 @@ class GuruSeeder extends Seeder
                 'email' => 'bagus.pratama@example.com',
                 'alamat' => 'Jl. Mawar No.7, Yogyakarta',
                 'tanggal_bergabung' => '2016-01-22',
-                'tanggal_pensiun' => '2054-11-15',
+                'tanggal_pensiun' => '2054-12-15',
                 'jam_mengajar_per_minggu' => '16',
             ],
             [
@@ -113,7 +113,7 @@ class GuruSeeder extends Seeder
                 'email' => 'intan.lestari@example.com',
                 'alamat' => 'Jl. Tanjung No.3, Malang',
                 'tanggal_bergabung' => '2019-04-17',
-                'tanggal_pensiun' => '2058-05-10',
+                'tanggal_pensiun' => '2058-06-10',
                 'jam_mengajar_per_minggu' => '15',
             ],
         ];
@@ -134,7 +134,7 @@ class GuruSeeder extends Seeder
                 'email' => 'sulastri.widya@example.com',
                 'alamat' => 'Jl. Melati No.4, Kediri',
                 'tanggal_bergabung' => '2012-03-01',
-                'tanggal_pensiun' => '2047-05-10',
+                'tanggal_pensiun' => '2047-06-10',
                 'jam_mengajar_per_minggu' => '12',
             ],
         ];

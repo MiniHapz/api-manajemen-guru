@@ -18,6 +18,7 @@ class Sekolah extends Model
         'npsn',
         'alamat',
         'kepala_sekolah_nip',
+        'status',
     ];
 
     // ===== RELASI =====

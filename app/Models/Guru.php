@@ -97,4 +97,10 @@ public function mapel()
     {
         return 'nip';
     }
+    protected function serializeDate(\DateTimeInterface $date)
+{
+    return $date->format('Y-m-d');
 }
+
+}
+

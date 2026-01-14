@@ -15,6 +15,8 @@ return new class extends Migration
             $table->string('akreditasi', 2)->nullable(); // A, B, C
             $table->string('npsn', 20)->unique();
             $table->text('alamat')->nullable();
+            $table->enum('status', ['aktif', 'nonaktif'])
+                  ->default('aktif');
             $table->timestamps();
         });
     }
